@@ -1,5 +1,5 @@
-const babysitterCalculator = (startTime: string, endTime: string) => {
-    if (startTime.split(":").length !== 2 || endTime.split(":").length !== 2) {
+const babysitterCalculator = (startTime: string, endTime: string): string => {
+    if (!(correctTimeString(startTime) && correctTimeString(endTime))) {
         return "Time must be entered as HH:MM.";
     }
 
@@ -7,10 +7,6 @@ const babysitterCalculator = (startTime: string, endTime: string) => {
     const endTimeHour = parseInt(endTime.split(":")[0]);
     const startTimeMin = parseInt(startTime.split(":")[1]);
     const endTimeMin = parseInt(endTime.split(":")[1]);
-
-    if(!(startTimeHour && startTimeMin && endTimeHour && endTimeMin)) {
-        return "Time must be entered as HH:MM.";
-    }
 
     if (startTimeHour < 17 ) {
         return "Start time must be 5:00pm or later.";
@@ -23,6 +19,10 @@ const babysitterCalculator = (startTime: string, endTime: string) => {
     }
 
     return "";
+}
+
+const correctTimeString = (time: string): boolean => {
+    return !!(time.split(":").length === 2 && parseInt(time.split(":")[0]) && parseInt(time.split(":")[1]));
 }
 
 export default babysitterCalculator
