@@ -48,7 +48,7 @@ describe("Babysitter Calculator", () => {
         });
 
         it("should return end time error message if endtime time hour is earlier than start time", () => {
-            const returnValue = babysitterCalculator("18:05", "17:01");
+            const returnValue = babysitterCalculator("18:00", "17:01");
 
             expect(returnValue).toBe("Start time must be earlier than end time.");
         });
@@ -63,6 +63,36 @@ describe("Babysitter Calculator", () => {
             const returnValue = babysitterCalculator("17:05", "17:05");
 
             expect(returnValue).toBe("Start time must be earlier than end time.");
+        });
+
+        it("should return end time error message if endtime time is before 5pm and later than 4am", () => {
+            const returnValue = babysitterCalculator("17:05", "05:00");
+
+            expect(returnValue).toBe("End time must be no later than 4:00am");
+        });
+
+        it("should return end time error message if endtime time is before 5pm and later than 4am hour", () => {
+            const returnValue = babysitterCalculator("17:05", "05:00");
+
+            expect(returnValue).toBe("End time must be no later than 4:00am");
+        });
+
+        it("should return end time error message if endtime time is before 5pm and in the 4am hour", () => {
+            const returnValue = babysitterCalculator("17:05", "04:18");
+
+            expect(returnValue).toBe("End time must be no later than 4:00am");
+        });
+
+        it("should not return end time error message if endtime time is 4am", () => {
+            const returnValue = babysitterCalculator("17:05", "04:00");
+
+            expect(returnValue).not.toBe("End time must be no later than 4:00am");
+        });
+
+        it("should not return end time error message if endtime time is earlier than 4am", () => {
+            const returnValue = babysitterCalculator("17:05", "03:59");
+
+            expect(returnValue).not.toBe("End time must be no later than 4:00am");
         });
     });
 });
