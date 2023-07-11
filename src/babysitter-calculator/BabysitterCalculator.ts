@@ -8,7 +8,9 @@ const babysitterCalculator = (startTime: string, endTime: string) => {
         return "Start time must be 5:00pm or later.";
     }
 
-    if (startTimeHour > endTimeHour || (startTimeHour === endTimeHour && endTimeMin <= startTimeMin)) {
+    const endTimeIsEarlierThanStartTime = startTimeHour > endTimeHour || (startTimeHour === endTimeHour && endTimeMin <= startTimeMin);
+
+    if (endTimeIsEarlierThanStartTime) {
         return "Start time must be earlier than end time.";
     }
 
