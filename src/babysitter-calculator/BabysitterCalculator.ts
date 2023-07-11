@@ -13,9 +13,15 @@ const babysitterCalculator = (startTime: string, endTime: string, bedTime: strin
         return endOrStartTimeError
     }
 
-    const preBedtimeCost = (adjustedEndTime < adjustedBedTime
-    ? adjustedEndTime - adjustedStartTime
-    : adjustedBedTime - adjustedStartTime)*12;
+    let preBedtimeCost = 0;
+    
+    if(adjustedBedTime > adjustedStartTime) {
+        if(adjustedEndTime < adjustedBedTime) {
+            preBedtimeCost = (adjustedEndTime - adjustedStartTime)*12
+        } else {
+            preBedtimeCost = (adjustedBedTime - adjustedStartTime)*12
+        }
+    }
 
     let preMidnightCost = 0;
     
@@ -23,7 +29,11 @@ const babysitterCalculator = (startTime: string, endTime: string, bedTime: strin
         if (adjustedEndTime > 24) {
             preMidnightCost = (24 - adjustedBedTime)*8
         } else {
-            preMidnightCost = (adjustedEndTime - adjustedBedTime)*8
+            if(adjustedBedTime > adjustedStartTime) {
+                preMidnightCost = (adjustedEndTime - adjustedBedTime)*8
+            } else {
+                preMidnightCost = (adjustedEndTime - adjustedStartTime)*8
+            }
         }
     }
 

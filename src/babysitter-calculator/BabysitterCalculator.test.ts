@@ -110,11 +110,17 @@ describe("Babysitter Calculator", () => {
         });
     });
 
-    describe("calculations", () => {
+    describe("calculations with whole numbers", () => {
         it("should multiply total hours by 12 if bedtime is after endTime", () => {
             const returnValue = babysitterCalculator("17:00", "19:00", "20:00");
 
             expect(returnValue).toBe("$24.00");
+        });
+
+        it("should multiply total hours by 8 if bedtime is before startTime and midnight is after endTime", () => {
+            const returnValue = babysitterCalculator("18:00", "19:00", "17:00");
+
+            expect(returnValue).toBe("$8.00");
         });
 
         it("should multiply pre-midnight hours by 8 and add to existing cost if bedtime is after endTime and endtime is before midnight", () => {
