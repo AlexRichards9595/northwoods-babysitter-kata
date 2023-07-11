@@ -4,11 +4,36 @@ const babysitterCalculator = (startTime: string, endTime: string, bedTime: strin
     }
 
     const endOrStartTimeError = findEndOrStartTimeErrors(startTime, endTime, bedTime);
+    
     if(endOrStartTimeError){
         return endOrStartTimeError
     }
 
-    return "";
+    const startTimeHour = getAdjustedTime(parseInt(startTime.split(":")[0]));
+    const endTimeHour = getAdjustedTime(parseInt(endTime.split(":")[0]));
+    const bedTimeHour = getAdjustedTime(parseInt(bedTime.split(":")[0]));
+
+    const preBedtimeCost = (endTimeHour < bedTimeHour
+    ? endTimeHour - startTimeHour
+    : bedTimeHour - startTimeHour)*12;
+
+    let preMidnightCost = 0;
+    
+    if(endTimeHour > bedTimeHour) {
+        if (endTimeHour > 24) {
+            preMidnightCost = (24 - bedTimeHour)*8
+        } else {
+            preMidnightCost = (endTimeHour - bedTimeHour)*8
+        }
+    }
+
+    const postMidnightCost = endTimeHour > 24
+    ? (endTimeHour - 24)*16
+    : 0;
+
+    const cost = preBedtimeCost + preMidnightCost + postMidnightCost;
+
+    return `$${cost}.00`;
 }
 
 const correctTimeString = (time: string): boolean => {
@@ -57,4 +82,4 @@ const getAdjustedTime = (time: number) => {
     return time < 17 ? time + 24 : time;
 }
 
-export default babysitterCalculator
+export default babysitterCalculator;

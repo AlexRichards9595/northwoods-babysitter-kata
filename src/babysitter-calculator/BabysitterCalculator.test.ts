@@ -109,4 +109,25 @@ describe("Babysitter Calculator", () => {
             expect(returnValue).toBe("Time must be entered as HH:MM.");
         });
     });
+
+    describe("calculations", () => {
+        it("should multiply total hours by 12 if bedtime is after endTime", () => {
+            const returnValue = babysitterCalculator("17:00", "19:00", "20:00");
+
+            expect(returnValue).toBe("$24.00");
+        });
+
+        it("should multiply pre-midnight hours by 8 and add to existing cost if bedtime is after endTime and endtime is before midnight", () => {
+            const returnValue = babysitterCalculator("17:00", "21:00", "20:00");
+
+            expect(returnValue).toBe("$44.00");
+        });
+
+        it("should multiply post-midnight hours by 16 and add to existing cost if endTime is after midnight", () => {
+            const returnValue = babysitterCalculator("17:00", "03:00", "20:00");
+
+            expect(returnValue).toBe("$116.00");
+        });
+
+    });
 });
