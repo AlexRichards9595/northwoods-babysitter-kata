@@ -65,12 +65,6 @@ describe("Babysitter Calculator", () => {
             expect(returnValue).toBe("Start time must be earlier than end time.");
         });
 
-        it("should return end time error message if endtime time is before 5pm and later than 4am", () => {
-            const returnValue = babysitterCalculator("17:05", "05:00", "17:04");
-
-            expect(returnValue).toBe("End time must be no later than 4:00am");
-        });
-
         it("should return end time error message if endtime time is before 5pm and later than 4am hour", () => {
             const returnValue = babysitterCalculator("17:05", "05:00", "17:04");
 
@@ -111,19 +105,19 @@ describe("Babysitter Calculator", () => {
     });
 
     describe("calculations with whole numbers", () => {
-        it("should multiply total hours by 12 if bedtime is after endTime", () => {
+        it("should multiply total hours by preBedTime rate if bedtime is after endTime and endTime is before midnight", () => {
             const returnValue = babysitterCalculator("17:00", "19:00", "20:00");
 
             expect(returnValue).toBe("$24.00");
         });
 
-        it("should only multiply by post bedtime rates if bedtime is before startTime", () => {
+        it("should only multiply by post bedtime rates if bedtime is before startTime and endTime is before midnight", () => {
             const returnValue = babysitterCalculator("18:00", "19:00", "17:00");
 
             expect(returnValue).toBe("$8.00");
         });
 
-        it("should multiply pre-midnight hours by 8 and add to existing cost if bedtime is after endTime and endtime is before midnight", () => {
+        it("should multiply pre-midnight/post-bedtime hours by 8 and add to existing cost if bedtime is after endTime and endtime is before midnight", () => {
             const returnValue = babysitterCalculator("17:00", "21:00", "20:00");
 
             expect(returnValue).toBe("$44.00");

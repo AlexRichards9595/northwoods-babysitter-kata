@@ -1,24 +1,38 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import babysitterCalculator from "./babysitter-calculator/BabysitterCalculator";
 
 function App() {
+  const [result, setResult] = useState<string | null>();
+  const startTimeRef = useRef<HTMLInputElement>(null);
+  const bedTimeRef = useRef<HTMLInputElement>(null);
+  const endTimeRef = useRef<HTMLInputElement>(null);
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+
+    const startTime = startTimeRef?.current?.value || "";
+    const endTime = endTimeRef?.current?.value || "";
+    const bedTime = bedTimeRef?.current?.value || "";
+
+    const calculation = babysitterCalculator(startTime, endTime, bedTime);
+
+    setResult(calculation);
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <h1>Babysitter Calculator</h1>
+        <form onSubmit={handleSubmit}>
+          <div className='input-group'>
+            <input type='text' ref={startTimeRef} placeholder='Start time (HH:MM)' />
+            <input type='text' ref={bedTimeRef} placeholder='Bed time (HH:MM)'></input>
+            <input type='text' ref={endTimeRef} placeholder='End time (HH:MM)'></input>
+          </div>
+          <button type="submit">Calculate</button>
+        </form>
+        {result && <h1>{result}</h1>}
     </div>
   );
 }

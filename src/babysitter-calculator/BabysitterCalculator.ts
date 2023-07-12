@@ -22,7 +22,7 @@ const babysitterCalculator = (startTime: string, endTime: string, bedTime: strin
     const preMidnightTime = getPreMidnightTime(adjustedEndTime, adjustedBedTime, adjustedStartTime);
     const postMidnightTime = getPostMidnightTime(adjustedEndTime, adjustedStartTime);
 
-    const cost = getFractionalTimeCost(adjustedEndTime, adjustedStartTime, preBedtimeTime, preMidnightTime, postMidnightTime);
+    const cost = getFractionalTimeCost(preBedtimeTime, preMidnightTime, postMidnightTime);
 
     return `$${cost.toFixed(2)}`;
 }
@@ -95,8 +95,8 @@ const getPreMidnightTime = (adjustedEndTime: number, adjustedBedTime: number, ad
     return (MIDNIGHT - adjustedBedTime);
 }
 
-const getFractionalTimeCost = (endTime: number, startTime: number, preBedtimeTime: number, preMidnightTime: number, postMidnightTime: number): number => {
-    const totalTime = endTime - startTime;
+const getFractionalTimeCost = (preBedtimeTime: number, preMidnightTime: number, postMidnightTime: number): number => {
+    const totalTime = preBedtimeTime + preMidnightTime + postMidnightTime;
 
     if(Number.isInteger(totalTime)) {
         return (preBedtimeTime * 12) + (preMidnightTime * 8) + (postMidnightTime * 16);
