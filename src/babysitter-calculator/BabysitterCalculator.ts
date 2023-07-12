@@ -13,15 +13,15 @@ const babysitterCalculator = (startTime: string, endTime: string, bedTime: strin
         return endOrStartTimeError
     }
 
-    const preBedtimeCost = getPreBedtimeCost(adjustedBedTime, adjustedStartTime, adjustedEndTime);
+    const totalFullHoursWorked = Math.floor(adjustedEndTime - adjustedStartTime);
 
-    const preMidnightCost = getPreMidnightCost(adjustedEndTime, adjustedBedTime, adjustedStartTime);
-
-    const postMidnightCost = getPostMidnightCost(adjustedEndTime);
+    const preBedtimeCost = getPreBedtimeCost(adjustedBedTime, adjustedStartTime, adjustedEndTime, totalFullHoursWorked);
+    const preMidnightCost = getPreMidnightCost(adjustedEndTime, adjustedBedTime, adjustedStartTime, totalFullHoursWorked);
+    const postMidnightCost = getPostMidnightCost(adjustedEndTime, adjustedStartTime, totalFullHoursWorked);
 
     const cost = preBedtimeCost + preMidnightCost + postMidnightCost;
 
-    return `$${cost}.00`;
+    return `$${cost.toFixed(2)}`;
 }
 
 const correctTimeString = (time: string): boolean => {
@@ -56,16 +56,21 @@ const getAdjustedTime = (time: string) => {
 
 export default babysitterCalculator;
 
-function getPostMidnightCost(adjustedEndTime: number) {
-    return adjustedEndTime > 24
-        ? (adjustedEndTime - 24) * 16
-        : 0;
+function getPostMidnightCost(adjustedEndTime: number, adjustedStartTime: number, totalFullHoursWorked: number) {
+    if (adjustedEndTime > 24) {
+        if ((adjustedEndTime - adjustedStartTime) === totalFullHoursWorked) {
+            return (adjustedEndTime - 24) * 16
+        } else {
+            return (adjustedEndTime - 25) * 16
+        }
+    }
+    return 0;
 }
 
-function getPreBedtimeCost(adjustedBedTime: number, adjustedStartTime: number, adjustedEndTime: number) {
+function getPreBedtimeCost(adjustedBedTime: number, adjustedStartTime: number, adjustedEndTime: number, totalFullHoursWorked: number) {
     if (adjustedBedTime > adjustedStartTime) {
         if (adjustedEndTime < adjustedBedTime) {
-            return (adjustedEndTime - adjustedStartTime) * 12;
+            return totalFullHoursWorked * 12;
         } else {
             return (adjustedBedTime - adjustedStartTime) * 12;
         }
@@ -73,15 +78,15 @@ function getPreBedtimeCost(adjustedBedTime: number, adjustedStartTime: number, a
     return 0;
 }
 
-function getPreMidnightCost(adjustedEndTime: number, adjustedBedTime: number, adjustedStartTime: number) {
+function getPreMidnightCost(adjustedEndTime: number, adjustedBedTime: number, adjustedStartTime: number, totalFullHoursWorked: number) {
     if (adjustedEndTime > adjustedBedTime) {
         if (adjustedEndTime > 24) {
             return (24 - adjustedBedTime) * 8;
         } else {
             if (adjustedBedTime > adjustedStartTime) {
-                return (adjustedEndTime - adjustedBedTime) * 8;
+                return Math.floor(totalFullHoursWorked - (adjustedBedTime - adjustedStartTime)) * 8;
             } else {
-                return (adjustedEndTime - adjustedStartTime) * 8;
+                return totalFullHoursWorked * 8;
             }
         }
     }

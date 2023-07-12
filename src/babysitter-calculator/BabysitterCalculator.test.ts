@@ -117,7 +117,7 @@ describe("Babysitter Calculator", () => {
             expect(returnValue).toBe("$24.00");
         });
 
-        it("should multiply total hours by 8 if bedtime is before startTime and midnight is after endTime", () => {
+        it("should only multiply by post bedtime rates if bedtime is before startTime", () => {
             const returnValue = babysitterCalculator("18:00", "19:00", "17:00");
 
             expect(returnValue).toBe("$8.00");
@@ -134,6 +134,31 @@ describe("Babysitter Calculator", () => {
 
             expect(returnValue).toBe("$116.00");
         });
+    });
 
+    describe("calculations with fractional numbers", () => {
+        it("should round down preBedTime to whole number if end time is before bedtime", () => {
+            const returnValue = babysitterCalculator("17:30", "19:00", "20:00");
+
+            expect(returnValue).toBe("$12.00");
+        });
+
+        it("should round down preMidnightCost to whole number if end time is before midnight and bedtime is before start time", () => {
+            const returnValue = babysitterCalculator("17:30", "19:00", "17:00");
+
+            expect(returnValue).toBe("$8.00");
+        });
+
+        it("should round down preMidnightCost to whole number if end time is before midnight", () => {
+            const returnValue = babysitterCalculator("17:30", "22:00", "19:00");
+            
+            expect(returnValue).toBe("$34.00");
+        });
+
+        it("should round down postMidnightCost to whole number if end time is after midnight", () => {
+            const returnValue = babysitterCalculator("17:22", "02:00", "19:00");
+            
+            expect(returnValue).toBe("$75.60");
+        });
     });
 });
