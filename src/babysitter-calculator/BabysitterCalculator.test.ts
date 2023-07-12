@@ -152,13 +152,18 @@ describe("Babysitter Calculator", () => {
         it("should round down preMidnightCost to whole number if end time is before midnight", () => {
             const returnValue = babysitterCalculator("17:30", "22:00", "19:00");
             
-            expect(returnValue).toBe("$34.00");
+            expect(returnValue).toBe("$38.00");
         });
 
-        it("should round down postMidnightCost to whole number if end time is after midnight", () => {
+        it("should multiply remaining time by postMidnight rate if end time is after midnight", () => {
             const returnValue = babysitterCalculator("17:22", "02:00", "19:00");
+            expect(returnValue).toBe("$81.47");
+        });
+
+        it("should not round costs of phases if total hours is not fractional", () => {
+            const returnValue = babysitterCalculator("17:00", "23:00", "19:30");
             
-            expect(returnValue).toBe("$75.60");
+            expect(returnValue).toBe("$58.00");
         });
     });
 });
