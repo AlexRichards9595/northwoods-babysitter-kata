@@ -1,3 +1,8 @@
+const MIDNIGHT = 24;
+const PRE_BEDTIME_RATE = 12;
+const PRE_MIDNIGHT_RATE = 8;
+const POST_MIDNIGHT_RATE = 16;
+
 const babysitterCalculator = (startTime: string, endTime: string, bedTime: string): string => {
     if (!(correctTimeString(startTime) && correctTimeString(endTime) && correctTimeString(bedTime))) {
         return "Time must be entered as HH:MM.";
@@ -57,38 +62,42 @@ const getAdjustedTime = (time: string) => {
 export default babysitterCalculator;
 
 function getPostMidnightCost(adjustedEndTime: number, adjustedStartTime: number, totalFullHoursWorked: number) {
-    if (adjustedEndTime > 24) {
-        if ((adjustedEndTime - adjustedStartTime) === totalFullHoursWorked) {
-            return (adjustedEndTime - 24) * 16
-        } else {
-            return (adjustedEndTime - 25) * 16
-        }
+    if (adjustedEndTime < MIDNIGHT) {
+        return 0;
     }
-    return 0;
+    
+    if ((adjustedEndTime - adjustedStartTime) === totalFullHoursWorked) {
+        return (adjustedEndTime - MIDNIGHT) * 16
+    }
+        
+    return (adjustedEndTime - 25) * 16
 }
 
 function getPreBedtimeCost(adjustedBedTime: number, adjustedStartTime: number, adjustedEndTime: number, totalFullHoursWorked: number) {
-    if (adjustedBedTime > adjustedStartTime) {
-        if (adjustedEndTime < adjustedBedTime) {
-            return totalFullHoursWorked * 12;
-        } else {
-            return (adjustedBedTime - adjustedStartTime) * 12;
-        }
+    if (adjustedBedTime < adjustedStartTime) {
+        return 0;
     }
-    return 0;
+    
+    if (adjustedEndTime < adjustedBedTime) {
+        return totalFullHoursWorked * PRE_BEDTIME_RATE;
+    }
+        
+    return (adjustedBedTime - adjustedStartTime) * PRE_BEDTIME_RATE;
 }
 
 function getPreMidnightCost(adjustedEndTime: number, adjustedBedTime: number, adjustedStartTime: number, totalFullHoursWorked: number) {
-    if (adjustedEndTime > adjustedBedTime) {
-        if (adjustedEndTime > 24) {
-            return (24 - adjustedBedTime) * 8;
+    if (adjustedEndTime < adjustedBedTime) {
+        return 0;
+    }
+    
+    if (adjustedEndTime < MIDNIGHT) {
+        if (adjustedBedTime > adjustedStartTime) {
+            const totalFullHoursLeft = Math.floor(totalFullHoursWorked - (adjustedBedTime - adjustedStartTime))
+            return totalFullHoursLeft * PRE_MIDNIGHT_RATE;
         } else {
-            if (adjustedBedTime > adjustedStartTime) {
-                return Math.floor(totalFullHoursWorked - (adjustedBedTime - adjustedStartTime)) * 8;
-            } else {
-                return totalFullHoursWorked * 8;
-            }
+            return totalFullHoursWorked * PRE_MIDNIGHT_RATE;
         }
     }
-    return 0;
+
+    return (MIDNIGHT - adjustedBedTime) * PRE_MIDNIGHT_RATE;
 }
