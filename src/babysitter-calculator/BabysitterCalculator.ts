@@ -13,33 +13,11 @@ const babysitterCalculator = (startTime: string, endTime: string, bedTime: strin
         return endOrStartTimeError
     }
 
-    let preBedtimeCost = 0;
-    
-    if(adjustedBedTime > adjustedStartTime) {
-        if(adjustedEndTime < adjustedBedTime) {
-            preBedtimeCost = (adjustedEndTime - adjustedStartTime)*12
-        } else {
-            preBedtimeCost = (adjustedBedTime - adjustedStartTime)*12
-        }
-    }
+    const preBedtimeCost = getPreBedtimeCost(adjustedBedTime, adjustedStartTime, adjustedEndTime);
 
-    let preMidnightCost = 0;
-    
-    if(adjustedEndTime > adjustedBedTime) {
-        if (adjustedEndTime > 24) {
-            preMidnightCost = (24 - adjustedBedTime)*8
-        } else {
-            if(adjustedBedTime > adjustedStartTime) {
-                preMidnightCost = (adjustedEndTime - adjustedBedTime)*8
-            } else {
-                preMidnightCost = (adjustedEndTime - adjustedStartTime)*8
-            }
-        }
-    }
+    const preMidnightCost = getPreMidnightCost(adjustedEndTime, adjustedBedTime, adjustedStartTime);
 
-    const postMidnightCost = adjustedEndTime > 24
-    ? (adjustedEndTime - 24)*16
-    : 0;
+    const postMidnightCost = getPostMidnightCost(adjustedEndTime);
 
     const cost = preBedtimeCost + preMidnightCost + postMidnightCost;
 
@@ -77,3 +55,35 @@ const getAdjustedTime = (time: string) => {
 }
 
 export default babysitterCalculator;
+
+function getPostMidnightCost(adjustedEndTime: number) {
+    return adjustedEndTime > 24
+        ? (adjustedEndTime - 24) * 16
+        : 0;
+}
+
+function getPreBedtimeCost(adjustedBedTime: number, adjustedStartTime: number, adjustedEndTime: number) {
+    if (adjustedBedTime > adjustedStartTime) {
+        if (adjustedEndTime < adjustedBedTime) {
+            return (adjustedEndTime - adjustedStartTime) * 12;
+        } else {
+            return (adjustedBedTime - adjustedStartTime) * 12;
+        }
+    }
+    return 0;
+}
+
+function getPreMidnightCost(adjustedEndTime: number, adjustedBedTime: number, adjustedStartTime: number) {
+    if (adjustedEndTime > adjustedBedTime) {
+        if (adjustedEndTime > 24) {
+            return (24 - adjustedBedTime) * 8;
+        } else {
+            if (adjustedBedTime > adjustedStartTime) {
+                return (adjustedEndTime - adjustedBedTime) * 8;
+            } else {
+                return (adjustedEndTime - adjustedStartTime) * 8;
+            }
+        }
+    }
+    return 0;
+}
