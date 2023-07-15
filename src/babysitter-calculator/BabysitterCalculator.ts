@@ -15,12 +15,12 @@ const babysitterCalculator = (startTime: string, endTime: string, bedTime: strin
     const endOrStartTimeError = findEndOrStartTimeErrors(adjustedStartTime, adjustedEndTime);
     
     if(endOrStartTimeError){
-        return endOrStartTimeError
+        return endOrStartTimeError;
     }
 
     const preBedtimeTime = getPreBedtimeTime(adjustedBedTime, adjustedStartTime, adjustedEndTime);
     const preMidnightTime = getPreMidnightTime(adjustedEndTime, adjustedBedTime, adjustedStartTime);
-    const postMidnightTime = getPostMidnightTime(adjustedEndTime, adjustedStartTime);
+    const postMidnightTime = getPostMidnightTime(adjustedEndTime);
 
     const cost = getFractionalTimeCost(preBedtimeTime, preMidnightTime, postMidnightTime);
 
@@ -59,7 +59,7 @@ const getAdjustedTime = (time: string) => {
 
 export default babysitterCalculator;
 
-const getPostMidnightTime = (adjustedEndTime: number, adjustedStartTime: number) => {
+const getPostMidnightTime = (adjustedEndTime: number) => {
     if (adjustedEndTime < MIDNIGHT) {
         return 0;
     }
@@ -99,22 +99,22 @@ const getFractionalTimeCost = (preBedtimeTime: number, preMidnightTime: number, 
     const totalTime = preBedtimeTime + preMidnightTime + postMidnightTime;
 
     if(Number.isInteger(totalTime)) {
-        return (preBedtimeTime * 12) + (preMidnightTime * 8) + (postMidnightTime * 16);
+        return (preBedtimeTime * PRE_BEDTIME_RATE) + (preMidnightTime * PRE_MIDNIGHT_RATE) + (postMidnightTime * POST_MIDNIGHT_RATE);
     }
 
     if(postMidnightTime !== 0) {
         const remainingTime = Math.floor(totalTime) - preBedtimeTime - preMidnightTime;
-        return (preBedtimeTime * 12) + (preMidnightTime * 8) + (remainingTime * 16);
+        return (preBedtimeTime * PRE_BEDTIME_RATE) + (preMidnightTime * PRE_MIDNIGHT_RATE) + (remainingTime * POST_MIDNIGHT_RATE);
     }
 
     if(preMidnightTime !== 0) {
         if(preBedtimeTime !== 0) {
             const remainingTime = Math.floor(totalTime) - preBedtimeTime;
-            return (preBedtimeTime * 12) + (remainingTime * 8);
+            return (preBedtimeTime * PRE_BEDTIME_RATE) + (remainingTime * PRE_MIDNIGHT_RATE);
         } else {
-            return (Math.floor(preMidnightTime) * 8) + (postMidnightTime * 16);
+            return (Math.floor(preMidnightTime) * PRE_MIDNIGHT_RATE) + (postMidnightTime * POST_MIDNIGHT_RATE);
         }
     }
 
-    return Math.floor(preBedtimeTime) * 12;
+    return Math.floor(preBedtimeTime) * PRE_BEDTIME_RATE;
 }
